@@ -1,4 +1,7 @@
 import random
+
+import pygame.time
+
 from settings import *
 from dinosaur import Dinosaur
 from cloud import Cloud
@@ -88,13 +91,16 @@ def menu(death_cnt):
 
 
 death_cnt = 0 # 记录死亡次数，death_cnt = 0显示开始界面，大于0的就会显示重开界面
+shoot_cnt = 0 # 记录射击的时刻
 def main():
-    global game_speed, x_ori_bg, y_ori_bg, points, barriers, death_cnt, barrier
+    global game_speed, x_ori_bg, y_ori_bg, points, barriers, death_cnt, barrier, clock_cnt
     run = True
 
     clock = pygame.time.Clock()
 
-    game_speed = 10  # 游戏的速度
+
+
+    game_speed = 5  # 游戏的速度
     player = Dinosaur(game_speed) # player是Dinosaur的一个对象
 
     cloud = Cloud(game_speed)
@@ -133,7 +139,7 @@ def main():
             x_ori_bg = 0
         x_ori_bg -= game_speed # 背景图片每帧往左移game_speed个单位
 
-
+    shoot_cnt = 0
 
     while run:
         for event in pygame.event.get():
@@ -142,10 +148,6 @@ def main():
 
         SCREEN.fill((255, 255, 255)) # 背景填充为白色
         userInput = pygame.key.get_pressed() # 从键盘读入按键
-
-
-
-
 
         background()  # 画出背景
 
@@ -189,17 +191,19 @@ def main():
                 bullet.draw(SCREEN)
                 bullet.update()
                 if bullet.rect.x > SCREEN_WIDTH:
-                    if not len(bullets) == 0:
-                        bullets.pop()
+                    if not len(bullets):
+                        bullets.remove(bullet)
                 if bullet.rect.colliderect(barrier.rect):
-                    bullets.pop()
-                    if not len(barriers) == 0:
-                        barriers.pop()
+                    barrier.hp -= 50
+                    bullets.remove(bullet)
+                    if not len(barriers) == 0 and barrier.hp <= 0:
+                        barriers.remove(barrier)
 
-        # 发射子弹，子弹数量不能超过3
-        if userInput[pygame.K_SPACE] and len(bullets) <= 3:
+
+        # 发射子弹，子弹数量不能超过3, 并且保证每个子弹的发射间隔小于300毫秒
+        if (userInput[pygame.K_SPACE] and pygame.time.get_ticks() - shoot_cnt >= 300) or (userInput[pygame.K_SPACE] and shoot_cnt == 0):
+            shoot_cnt = pygame.time.get_ticks() # 更新当前时间
             bullets.append(Bullet(game_speed, player))
-
 
         pygame.display.update()
 

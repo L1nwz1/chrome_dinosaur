@@ -15,7 +15,7 @@ class Dinosaur:
         self.game_speed = game_speed
 
         # 恐龙的三种状态：低头，奔跑，跳跃
-        self.status = 1 # 状态机：0表示低头， 1表示奔跑， 2表示跳跃状态
+        self.status = 1 # 状态机：0表示低头， 1表示奔跑， 2表示跳跃状态, 3表示往左移动， 4表示往右移动
 
         self.index = 0
         self.v = self.ORI_V # 设定初始速度为ORI_V
@@ -32,7 +32,6 @@ class Dinosaur:
             self.run()
         if self.status == 2:
             self.jump()
-
         if self.index >= 10:
             self.index = 0
 

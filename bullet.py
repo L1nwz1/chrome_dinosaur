@@ -10,6 +10,6 @@ class Bullet:
         print(self.rect)
 
     def update(self):
-        self.rect.x += self.game_speed - 5
+        self.rect.x += self.game_speed
     def draw(self,SCREEN):
         SCREEN.blit(self.image, (self.rect.x, self.rect.y))
