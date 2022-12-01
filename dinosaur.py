@@ -65,9 +65,9 @@ class Dinosaur:
             self.status = 1
             self.v = self.ORI_V
 
-    def dead(self):
-
-
-    # 定义draw函数以刷新画面
     def draw(self, SCREEN):
         SCREEN.blit(self.image, (self.dino_rect.x, self.dino_rect.y))
+
+    # 定义draw函数以刷新画面
+    def draw_death(self,SCREEN):
+        SCREEN.blit(DEAD, (self.dino_rect.x, self.dino_rect.y))

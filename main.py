@@ -1,28 +1,10 @@
-import pygame
-import os
 import random
 from settings import *
 from dinosaur import Dinosaur
+from cloud import Cloud
 
 pygame.init() # 初始化pygame
 pygame.display.set_caption('chrome dinosaur') # 设置标题
-
-class Cloud:
-    def __init__(self):
-        # 随机设定云的x，y坐标
-        self.x = SCREEN_WIDTH + random.randint(200, 500) # 云先出现在游戏画面外，然后飞入
-        self.y = random.randint(50, 200) # 云的y坐标，即离上部分区域的距离
-        self.image = CLOUD # image 保存云的图片
-        self.width = self.image.get_width()
-
-    def update(self):
-        self.x -= game_speed
-        if self.x < -self.width:
-            self.x = SCREEN_WIDTH + random.randint(2500, 3000)
-            self.y = random.randint(50, 100)
-
-    def draw(self, SCREEN):
-        SCREEN.blit(self.image, (self.x, self.y))
 
 class Barrier: # 定义一个障碍物基类， 后面的各个障碍物都是Barrier的子类
     def __init__(self, image, type):
@@ -30,16 +12,17 @@ class Barrier: # 定义一个障碍物基类， 后面的各个障碍物都是Ba
         self.type = type
         self.rect = self.image[self.type].get_rect()
         self.rect.x = SCREEN_WIDTH # 先把障碍物放到地图的右下角，然后出来
+        self.game_speed = game_speed
 
     def update(self):
-        self.rect.x -= game_speed # x坐标向左移动，即障碍物向左移动
+        self.rect.x -= self.game_speed # x坐标向左移动，即障碍物向左移动
         if self.rect.x < -self.rect.width: # 还需要判断障碍物是否移出了边界，如果越界的话我们要把该障碍物释放掉
             barriers.pop()
 
     def draw(self, SCREEN):
         SCREEN.blit(self.image[self.type], self.rect)
 
-
+# barriers的子类
 class SmallCactus(Barrier):
     def __init__(self, image):
         self.type = random.randint(0, 2) #随机生成0-2下标，即随机生成3种小仙人掌中的一个
@@ -62,9 +45,8 @@ class Bird(Barrier):
     def draw(self, SCREEN):
         if self.index >= 9:
             self.index = 0
-        SCREEN.blit(self.image[self.index//5], self.rect)
+        SCREEN.blit(self.image[self.index // 5], self.rect)
         self.index += 1
-
 
 def main():
     global game_speed, x_ori_bg, y_ori_bg, points, barriers
@@ -72,16 +54,17 @@ def main():
 
     clock = pygame.time.Clock()
     player = Dinosaur() # player是Dinosaur的一个对象
-    cloud = Cloud()
 
-    game_speed = 15 # 游戏的速度
+    game_speed = 15  # 游戏的速度
+    cloud = Cloud(game_speed)
+
     # 设置背景图片的初始位置
     x_ori_bg = 0
     y_ori_bg = 380
     points = 0
     font = pygame.font.SysFont(['方正粗黑宋简体','microsoftsansserif'], 20) # 分数的字体
     barriers = []
-    death_cnt = 0 # 记录死亡次数，death_cnt== 0大于0的话就会显示重开界面
+    death_cnt = 0 # 记录死亡次数，death_cnt == 0显示开始界面，大于0的就会显示重开界面
 
 
     def score():
@@ -113,6 +96,7 @@ def main():
         SCREEN.fill((255, 255, 255)) # 背景填充为白色
         userInput = pygame.key.get_pressed() # 从键盘读入按键
 
+
         player.draw(SCREEN)
         player.update(userInput) # 调用dinosaur的update函数
 
@@ -130,24 +114,24 @@ def main():
             barrier.draw(SCREEN) # 调用barrier类的draw函数，渲染画面
             barrier.update()
             if player.dino_rect.colliderect(barrier.rect): # pygame的一个方法colliderect检测两个物体是否碰撞
-                SCREEN.blit(DEAD, (player.dino_rect.x, player.dino_rect.y))
+                player.draw_death(SCREEN)
                 pygame.time.delay(2000)
                 death_cnt += 1
                 menu(death_cnt) # 调出死亡界面
 
-        background()
+        background() # 画出背景
 
-        cloud.draw(SCREEN)
-        cloud.update()
+        cloud.draw(SCREEN) # 画出云的图像
+        cloud.update()  # 更新云的位置
 
-        score()
+        score() # 显示分数
 
-        clock.tick(60) #60fps
+        clock.tick(60) # 60fps
         pygame.display.update()
 
 
 def menu(death_cnt):
-    global points # 设置分数
+    global points # 引入points变成全局变量
     run = True
     while run:
         SCREEN.fill((255, 255, 255)) # 背景色设置为白色
@@ -157,7 +141,7 @@ def menu(death_cnt):
             text = font.render("Press any key to start", True, (0, 0, 0))
         elif death_cnt > 0:
             text = font.render("Press any key to restart", True, (0, 0, 0))
-            score = font.render("Score: " + str(points), True, (0, 0, 0)) # 分数变化
+            score = font.render("Score: " + str(points), True, (0, 0, 0)) # 分数
             scoreRect = score.get_rect()
             scoreRect.center = (SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2 + 50) # 将分数显示在游戏屏幕中间
             SCREEN.blit(score, scoreRect) # 将score图片画在SCREEN画面上
