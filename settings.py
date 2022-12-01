@@ -1,8 +1,7 @@
 import pygame
 import os
 
-# 保存每一个类的图像数据
-
+# 设置游戏界面大小，保存每一个类的图像数据
 SCREEN_HEIGHT = 600
 SCREEN_WIDTH = 1100
 SCREEN = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))

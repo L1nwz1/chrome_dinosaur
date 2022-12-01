@@ -12,9 +12,9 @@ class Cloud:
 
     def update(self):
         self.x -= self.game_speed
-        if self.x < -self.width:
-            self.x = SCREEN_WIDTH + random.randint(2500, 3000)
-            self.y = random.randint(50, 100)
+        if self.x < -self.width: # 当云从左边出界后又从右边出来
+            self.x = SCREEN_WIDTH + random.randint(200, 500)
+            self.y = random.randint(50, 200)
 
     def draw(self, SCREEN):
         SCREEN.blit(self.image, (self.x, self.y))

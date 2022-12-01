@@ -47,7 +47,32 @@ class Bird(Barrier):
             self.index = 0
         SCREEN.blit(self.image[self.index // 5], self.rect)
         self.index += 1
+def menu(death_cnt):
+    global points # 引入points变成全局变量
+    run = True
+    while run:
+        SCREEN.fill((255, 255, 255)) # 背景色设置为白色
+        font = pygame.font.SysFont(['方正粗黑宋简体','microsoftsansserif'], 50) # 设置字体
 
+        if death_cnt == 0:
+            text = font.render("Press any key to start", True, (0, 0, 0))
+        elif death_cnt > 0:
+            text = font.render("Press any key to restart", True, (0, 0, 0))
+            score = font.render("Score: " + str(points), True, (0, 0, 0)) # 分数
+            scoreRect = score.get_rect()
+            scoreRect.center = (SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2 + 50) # 将分数显示在游戏屏幕中间
+            SCREEN.blit(score, scoreRect) # 将score图片画在SCREEN画面上
+        textRect = text.get_rect()
+        textRect.center = (SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2)
+        SCREEN.blit(text, textRect)
+        SCREEN.blit(RUNNING[0], (SCREEN_WIDTH // 2 - 20, SCREEN_HEIGHT // 2 - 140)) #把恐龙的图片显示在菜单界面
+        pygame.display.update() # 更新画面
+        # 判断各个事件
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                run = False
+            if event.type == pygame.KEYDOWN:
+                main()
 def main():
     global game_speed, x_ori_bg, y_ori_bg, points, barriers
     run = True
@@ -97,8 +122,15 @@ def main():
         userInput = pygame.key.get_pressed() # 从键盘读入按键
 
 
-        player.draw(SCREEN)
-        player.update(userInput) # 调用dinosaur的update函数
+
+        background()  # 画出背景
+
+        cloud.draw(SCREEN)  # 画出云的图像
+        cloud.update()  # 更新云的位置
+
+        score()  # 显示分数
+
+        clock.tick(60)  # 60fps
 
         # 如果还没有障碍物，那么生成一个障碍物
         if len(barriers) == 0:
@@ -111,50 +143,21 @@ def main():
                 barriers.append(Bird(BIRD))
 
         for barrier in barriers:
+
             barrier.draw(SCREEN) # 调用barrier类的draw函数，渲染画面
             barrier.update()
             if player.dino_rect.colliderect(barrier.rect): # pygame的一个方法colliderect检测两个物体是否碰撞
                 player.draw_death(SCREEN)
-                pygame.time.delay(2000)
+                pygame.display.update() #显示死亡界面
+                pygame.time.delay(500)
                 death_cnt += 1
                 menu(death_cnt) # 调出死亡界面
+            else:
+                player.draw(SCREEN)  # 渲染恐龙画面
+                player.update(userInput)  # 调用dinosaur的update函数每次渲染都判断一次是否按下相应的键位
 
-        background() # 画出背景
-
-        cloud.draw(SCREEN) # 画出云的图像
-        cloud.update()  # 更新云的位置
-
-        score() # 显示分数
-
-        clock.tick(60) # 60fps
         pygame.display.update()
 
-
-def menu(death_cnt):
-    global points # 引入points变成全局变量
-    run = True
-    while run:
-        SCREEN.fill((255, 255, 255)) # 背景色设置为白色
-        font = pygame.font.SysFont(['方正粗黑宋简体','microsoftsansserif'], 50) # 设置字体
-
-        if death_cnt == 0:
-            text = font.render("Press any key to start", True, (0, 0, 0))
-        elif death_cnt > 0:
-            text = font.render("Press any key to restart", True, (0, 0, 0))
-            score = font.render("Score: " + str(points), True, (0, 0, 0)) # 分数
-            scoreRect = score.get_rect()
-            scoreRect.center = (SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2 + 50) # 将分数显示在游戏屏幕中间
-            SCREEN.blit(score, scoreRect) # 将score图片画在SCREEN画面上
-        textRect = text.get_rect()
-        textRect.center = (SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2)
-        SCREEN.blit(text, textRect)
-        SCREEN.blit(RUNNING[0], (SCREEN_WIDTH // 2 - 20, SCREEN_HEIGHT // 2 - 140)) #把恐龙的图片显示在菜单界面
-        pygame.display.update() # 更新画面
-        # 判断各个事件
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                run = False
-            if event.type == pygame.KEYDOWN:
-                main()
-# 开始界面
-menu(death_cnt=0)
+if __name__ == '__main__':
+    menu(death_cnt=0)
+    main()
