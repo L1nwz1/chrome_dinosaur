@@ -4,7 +4,7 @@ class Dinosaur:
     X_ori = 80 # 恐龙的初始x坐标
     Y_ori = 310 # 恐龙的初始y坐标
     Y_ori_DUCK = 340 # 恐龙的初始低头y坐标
-    ORI_V = 10 # 恐龙的初始跳跃速度
+    ORI_V = 7 # 恐龙的初始跳跃速度
 
     def __init__(self):
         # 读入setting中恐龙三种状态所属的列表图片
@@ -59,15 +59,16 @@ class Dinosaur:
     def jump(self):
         self.image = self.jump_img
         if self.status == 2:
-            self.dino_rect.y -= self.v * 4 # 在空中下降
-            self.v -= 0.8 # 加速度为-0.8
+            self.dino_rect.y -= self.v * 5 # 在空中下降
+            self.v -= 0.5 # 加速度为-0.5
         if self.v < - self.ORI_V: # 恢复初始跳跃速度
             self.status = 1
             self.v = self.ORI_V
 
+    # 定义draw函数以刷新画面
     def draw(self, SCREEN):
         SCREEN.blit(self.image, (self.dino_rect.x, self.dino_rect.y))
 
-    # 定义draw函数以刷新画面
+    # 死亡动画
     def draw_death(self,SCREEN):
         SCREEN.blit(DEAD, (self.dino_rect.x, self.dino_rect.y))
