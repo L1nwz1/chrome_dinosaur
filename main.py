@@ -61,11 +61,12 @@ def menu(death_cnt):
             score = font.render("Score: " + str(points), True, (0, 0, 0)) # 分数
             scoreRect = score.get_rect()
             scoreRect.center = (SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2 + 50) # 将分数显示在游戏屏幕中间
-            SCREEN.blit(score, scoreRect) # 将score图片画在SCREEN画面上
+            SCREEN.blit(GAMEOVER, (SCREEN_WIDTH // 2 - 200, SCREEN_HEIGHT // 2 - 200)) # 显示GAMEOVER图片
+            SCREEN.blit(score, scoreRect) # 显示分数
         textRect = text.get_rect()
         textRect.center = (SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2)
         SCREEN.blit(text, textRect)
-        SCREEN.blit(RUNNING[0], (SCREEN_WIDTH // 2 - 20, SCREEN_HEIGHT // 2 - 140)) #把恐龙的图片显示在菜单界面
+        SCREEN.blit(RUNNING[0], (SCREEN_WIDTH // 2 - 50, SCREEN_HEIGHT // 2 - 140)) #把恐龙的图片显示在菜单界面
         pygame.display.update() # 更新画面
         # 判断各个事件
         for event in pygame.event.get():
@@ -121,8 +122,6 @@ def main():
         SCREEN.fill((255, 255, 255)) # 背景填充为白色
         userInput = pygame.key.get_pressed() # 从键盘读入按键
 
-
-
         background()  # 画出背景
 
         cloud.draw(SCREEN)  # 画出云的图像
@@ -133,7 +132,7 @@ def main():
         clock.tick(60)  # 60fps
 
         # 如果还没有障碍物，那么生成一个障碍物
-        if len(barriers) == 0:
+        if len(barriers) <= 0:
             # 随机等可能生成障碍物
             if random.randint(0, 2) == 0:
                 barriers.append(SmallCactus(SMALL_CACTUS)) # 向列表添加障碍物元素
@@ -148,7 +147,7 @@ def main():
             barrier.update()
             if player.dino_rect.colliderect(barrier.rect): # pygame的一个方法colliderect检测两个物体是否碰撞
                 player.draw_death(SCREEN)
-                pygame.display.update() #显示死亡界面
+                pygame.display.update() # 显示死亡动画
                 pygame.time.delay(500)
                 death_cnt += 1
                 menu(death_cnt) # 调出死亡界面
