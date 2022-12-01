@@ -97,7 +97,7 @@ def menu(death_cnt):
 
 
 death_cnt = 0 # 记录死亡次数，death_cnt = 0显示开始界面，大于0的就会显示重开界面
-shoot_cnt = 0 # 记录射击的时刻
+last_timestamp = 0 # 记录射击的时刻
 def main():
     global game_speed, x_ori_bg, y_ori_bg, points, barriers, death_cnt, barrier, clock_cnt
     run = True
@@ -145,7 +145,7 @@ def main():
         x_ori_bg -= game_speed # 背景图片每帧往左移game_speed个单位
 
 
-    shoot_cnt = 0
+    last_timestamp = 0
 
     while run:
         for event in pygame.event.get():
@@ -210,9 +210,9 @@ def main():
                         barriers.remove(barrier)
 
 
-        # 发射子弹，子弹数量不能超过3, 并且保证每个子弹的发射间隔小于200毫秒
-        if (userInput[pygame.K_SPACE] and pygame.time.get_ticks() - shoot_cnt >= 200) or (userInput[pygame.K_SPACE] and shoot_cnt == 0):
-            shoot_cnt = pygame.time.get_ticks() # 更新当前时间
+        # 发射子弹， 并且保证每个子弹的发射间隔小于200毫秒
+        if (userInput[pygame.K_SPACE] and pygame.time.get_ticks() - last_timestamp >= 200) or (userInput[pygame.K_SPACE] and last_timestamp == 0):
+            last_timestamp = pygame.time.get_ticks() # 更新当前时间
             bullets.append(Bullet(game_speed, player))
 
         pygame.display.update()
