@@ -146,6 +146,10 @@ def main():
 
         # 如果还没有障碍物，那么生成一个障碍物
         if len(barriers) <= 0:
+            
+            player.draw(SCREEN)  # 渲染恐龙画面
+            player.update(userInput)  # 调用dinosaur的update函数每次渲染都判断一次是否按下相应的键位
+
             # 随机等可能生成障碍物
             if random.randint(0, 2) == 0:
                 barriers.append(SmallCactus(SMALL_CACTUS)) # 向列表添加障碍物元素
@@ -155,13 +159,12 @@ def main():
                 barriers.append(Bird(BIRD))
 
         for barrier in barriers:
-
             barrier.draw(SCREEN) # 调用barrier类的draw函数，渲染画面
             barrier.update()
             if player.dino_rect.colliderect(barrier.rect): # pygame的一个方法colliderect检测两个物体是否碰撞
                 player.draw_death(SCREEN)
                 pygame.display.update() # 显示死亡动画
-                pygame.time.delay(2000)
+                pygame.time.delay(1000)
                 death_cnt += 1
                 menu(death_cnt) # 调出死亡界面
             else:
