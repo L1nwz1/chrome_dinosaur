@@ -1,4 +1,5 @@
 from settings import *
+from bullet import Bullet
 
 class Dinosaur:
     X_ori = 80 # 恐龙的初始x坐标
@@ -6,11 +7,12 @@ class Dinosaur:
     Y_ori_DUCK = 340 # 恐龙的初始低头y坐标
     ORI_V = 7 # 恐龙的初始跳跃速度
 
-    def __init__(self):
+    def __init__(self, game_speed):
         # 读入setting中恐龙三种状态所属的列表图片
         self.duck_img = DUCKING
         self.run_img = RUNNING
         self.jump_img = JUMPING
+        self.game_speed = game_speed
 
         # 恐龙的三种状态：低头，奔跑，跳跃
         self.status = 1 # 状态机：0表示低头， 1表示奔跑， 2表示跳跃状态

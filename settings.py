@@ -31,3 +31,5 @@ GAMEOVER = pygame.image.load(os.path.join("Images/Other", "GameOver.png"))
 RESET = pygame.image.load(os.path.join("Images/Other", "Reset.png"))
 
 BG = pygame.image.load(os.path.join("Images/Other", "BackGround.png"))
+
+BULLET = pygame.image.load(os.path.join("Images/Other", "Bullet.png"))
