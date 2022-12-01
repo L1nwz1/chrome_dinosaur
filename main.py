@@ -56,9 +56,9 @@ def menu(death_cnt):
 
 
         if death_cnt == 0:
-            text = font.render("Press any key to start", True, (0, 0, 0))
+            text = font.render("Press Any Key To Start", True, (0, 0, 0))
         elif death_cnt > 0:
-            text = font.render("Press any key to restart", True, (0, 0, 0))
+            text = font.render("Press Any Key To Restart", True, (0, 0, 0))
             score = font.render("Your Score: " + str(points), True, (0, 0, 0)) # 分数
             if death_cnt == 1:
                 max_score = points
@@ -76,7 +76,7 @@ def menu(death_cnt):
         SCREEN.blit(text, textRect)
         SCREEN.blit(RUNNING[0], (SCREEN_WIDTH // 2 - 50, SCREEN_HEIGHT // 2 - 140)) #把恐龙的图片显示在菜单界面
         pygame.display.update() # 更新画面
-        # 判断各个事件
+        # 判断各个事件, 开始游戏
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 sys.exit()
@@ -146,7 +146,8 @@ def main():
 
         # 如果还没有障碍物，那么生成一个障碍物
         if len(barriers) <= 0:
-            
+
+            # 防止障碍物为0的情况下恐龙闪烁
             player.draw(SCREEN)  # 渲染恐龙画面
             player.update(userInput)  # 调用dinosaur的update函数每次渲染都判断一次是否按下相应的键位
 
