@@ -27,6 +27,12 @@ class Barrier: # 定义一个障碍物基类， 后面的各个障碍物都是Ba
     def draw(self, SCREEN):
         SCREEN.blit(self.image[self.type], self.rect)
 
+    # 头顶显示血量
+    def showHp(self):
+        font = pygame.font.SysFont(['方正粗黑宋简体','microsoftsansserif'], 30)
+        text = font.render("Hp: " + str(self.hp), True, (0, 0, 0))
+        textRect = text.get_rect()
+        SCREEN.blit(text, (self.rect.x, self.rect.y - 20))
 # barriers的子类
 class SmallCactus(Barrier):
     def __init__(self, image):
@@ -117,7 +123,6 @@ def main():
     bullets = []
 
 
-
     def score():
         global points, game_speed
         points += 1
@@ -139,6 +144,7 @@ def main():
             x_ori_bg = 0
         x_ori_bg -= game_speed # 背景图片每帧往左移game_speed个单位
 
+
     shoot_cnt = 0
 
     while run:
@@ -148,6 +154,8 @@ def main():
 
         SCREEN.fill((255, 255, 255)) # 背景填充为白色
         userInput = pygame.key.get_pressed() # 从键盘读入按键
+
+
 
         background()  # 画出背景
 
@@ -159,7 +167,7 @@ def main():
         clock.tick(60)  # 60fps
 
         # 如果还没有障碍物，那么生成一个障碍物
-        if len(barriers) <= 0:
+        if len(barriers) <= 1:
 
             # 防止障碍物为0的情况下恐龙闪烁
             player.draw(SCREEN)  # 渲染恐龙画面
@@ -176,6 +184,8 @@ def main():
         for barrier in barriers:
             barrier.draw(SCREEN) # 调用barrier类的draw函数，渲染画面
             barrier.update()
+            barrier.showHp()
+
             if player.dino_rect.colliderect(barrier.rect): # pygame的一个方法colliderect检测两个物体是否碰撞
                 player.draw_death(SCREEN)
                 pygame.display.update() # 显示死亡动画
@@ -200,8 +210,8 @@ def main():
                         barriers.remove(barrier)
 
 
-        # 发射子弹，子弹数量不能超过3, 并且保证每个子弹的发射间隔小于300毫秒
-        if (userInput[pygame.K_SPACE] and pygame.time.get_ticks() - shoot_cnt >= 300) or (userInput[pygame.K_SPACE] and shoot_cnt == 0):
+        # 发射子弹，子弹数量不能超过3, 并且保证每个子弹的发射间隔小于200毫秒
+        if (userInput[pygame.K_SPACE] and pygame.time.get_ticks() - shoot_cnt >= 200) or (userInput[pygame.K_SPACE] and shoot_cnt == 0):
             shoot_cnt = pygame.time.get_ticks() # 更新当前时间
             bullets.append(Bullet(game_speed, player))
 

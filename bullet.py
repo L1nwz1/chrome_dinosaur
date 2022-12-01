@@ -7,7 +7,6 @@ class Bullet:
         self.rect = self.image.get_rect()
         self.rect.x = dinosaur.dino_rect.x + dinosaur.dino_rect[2] + 10
         self.rect.y = dinosaur.dino_rect.y + dinosaur.dino_rect[3] / 2
-        print(self.rect)
 
     def update(self):
         self.rect.x += self.game_speed
