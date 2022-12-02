@@ -13,6 +13,9 @@ class Dinosaur:
         self.run_img = RUNNING
         self.jump_img = JUMPING
         self.game_speed = game_speed
+        self.gravity = 9.8
+        self.hp = 2
+
 
         # 恐龙的三种状态：低头，奔跑，跳跃
         self.status = 1 # 状态机：0表示低头， 1表示奔跑， 2表示跳跃状态, 3表示往左移动， 4表示往右移动
@@ -60,7 +63,8 @@ class Dinosaur:
     def jump(self):
         self.image = self.jump_img
         if self.status == 2:
-            self.dino_rect.y -= self.v * 5 # 在空中下降
+            # 抛物线公式
+            self.dino_rect.y -= self.v * 4 # 在空中下降,注意y轴是向下的，所以需要是-=
             self.v -= 0.5 # 加速度为-0.5
         if self.v < - self.ORI_V: # 恢复初始跳跃速度
             self.status = 1
@@ -73,3 +77,18 @@ class Dinosaur:
     # 死亡动画
     def draw_death(self,SCREEN):
         SCREEN.blit(DEAD, (self.dino_rect.x, self.dino_rect.y))
+
+    def showHp(self):
+        font = pygame.font.SysFont(['方正粗黑宋简体', 'microsoftsansserif'], 30)
+        text = font.render("Hp: " + str(self.hp), True, (0, 0, 0))
+        SCREEN.blit(text, (self.dino_rect.x, self.dino_rect.y - 20))
+
+    def showHit(self):
+        font = pygame.font.SysFont(['方正粗黑宋简体', 'microsoftsansserif'], 30)
+        text = font.render("OAO", True, (0, 0, 0))
+        SCREEN.blit(text, (self.dino_rect.x, self.dino_rect.y - 50))
+
+    def showDead(self):
+        font = pygame.font.SysFont(['方正粗黑宋简体', 'microsoftsansserif'], 30)
+        text = font.render("TAT", True, (0, 0, 0))
+        SCREEN.blit(text, (self.dino_rect.x, self.dino_rect.y - 50))
