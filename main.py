@@ -32,6 +32,11 @@ class Barrier: # 定义一个障碍物基类， 后面的各个障碍物都是Ba
         font = pygame.font.SysFont(['方正粗黑宋简体','microsoftsansserif'], 30)
         text = font.render("Hp: " + str(self.hp), True, (0, 0, 0))
         SCREEN.blit(text, (self.rect.x, self.rect.y - 20))
+
+    def showHit(self):
+        font = pygame.font.SysFont(['方正粗黑宋简体', 'microsoftsansserif'], 30)
+        text = font.render("┗|`O'|┛", True, (0, 0, 0))
+        SCREEN.blit(text, (self.rect.x, self.rect.y - 70))
 # barriers的子类
 class SmallCactus(Barrier):
     def __init__(self, image):
@@ -131,17 +136,20 @@ def main():
     def background():
         global x_ori_bg, y_ori_bg
         image_width = BG.get_width()
-        SCREEN.blit(BG, (x_ori_bg, y_ori_bg)) # 保证图片连续
-        SCREEN.blit(BG, (image_width + x_ori_bg, y_ori_bg))
+        SCREEN.blit(BG, (x_ori_bg, y_ori_bg))
+        SCREEN.blit(BG, (image_width + x_ori_bg, y_ori_bg)) # 保证图片连续
         if x_ori_bg <= -image_width: # 越界
             SCREEN.blit(BG, (image_width + x_ori_bg, y_ori_bg))
             x_ori_bg = 0
         x_ori_bg -= game_speed # 背景图片每帧往左移game_speed个单位
 
-    flag_hit = 0  # 标记是否被击中过
+    flag_hit = 0  # 标记恐龙是否被击中过
     death_cnt = 0  # 记录死亡次数，death_cnt = 0显示开始界面，大于0的就会显示重开界面
     last_timestamp = 0  # 记录时钟记录的上一个时刻
-    last_timestamp_hit = 0
+    last_timestamp_hit = 0 # 记录恐龙受到伤害时钟记录的上一个时刻
+    last_timestamp_barr_hit = 0 # 记录障碍物受到伤害时钟记录的上一个时刻
+    flag_barr_hit = 0 # 记录障碍物有没有受得伤害
+
 
     while run:
         for event in pygame.event.get():
@@ -158,6 +166,8 @@ def main():
                 player.showHit()
             if pygame.time.get_ticks() - last_timestamp_hit > 3000:
                 flag_hit = 0
+
+
 
 
         background()  # 画出背景
@@ -190,6 +200,12 @@ def main():
             barrier.update()
             barrier.showHp() # 显示血量
 
+            if flag_barr_hit == 1:
+                if barrier.hp < 100 and pygame.time.get_ticks() - last_timestamp_barr_hit <= 3000:
+                    barrier.showHit()
+                if pygame.time.get_ticks() - last_timestamp_barr_hit > 3000:
+                    flag_barr_hit = 0
+
             if player.dino_rect.colliderect(barrier.rect): # pygame的一个方法colliderect检测两个物体是否碰撞
                 last_timestamp_hit = pygame.time.get_ticks()
                 player.hp -= 1  # 被击中生命值减1
@@ -217,9 +233,12 @@ def main():
                     if not len(bullets):
                         bullets.remove(bullet)
                 if bullet.rect.colliderect(barrier.rect):
+                    last_timestamp_barr_hit = pygame.time.get_ticks()
                     barrier.hp -= 50
+                    flag_barr_hit = 1
                     bullets.remove(bullet)
                     if not len(barriers) == 0 and barrier.hp <= 0:
+                        points += 50
                         barriers.remove(barrier)
 
 

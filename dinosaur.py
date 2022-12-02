@@ -5,7 +5,7 @@ class Dinosaur:
     X_ori = 80 # 恐龙的初始x坐标
     Y_ori = 310 # 恐龙的初始y坐标
     Y_ori_DUCK = 340 # 恐龙的初始低头y坐标
-    ORI_V = 7 # 恐龙的初始跳跃速度
+    ori_vy = 7 # 恐龙的初始跳跃速度
 
     def __init__(self, game_speed):
         # 读入setting中恐龙三种状态所属的列表图片
@@ -21,7 +21,7 @@ class Dinosaur:
         self.status = 1 # 状态机：0表示低头， 1表示奔跑， 2表示跳跃状态, 3表示往左移动， 4表示往右移动
 
         self.index = 0
-        self.v = self.ORI_V # 设定初始速度为ORI_V
+        self.vy = self.ori_vy # 设定初始速度为ori_vy
         self.image = self.run_img[0] # 初始的跑步动作下标为0
         self.dino_rect = self.image.get_rect() # get_rect是获取图像的位置信息以及宽度高度
         self.dino_rect.x = self.X_ori
@@ -64,11 +64,11 @@ class Dinosaur:
         self.image = self.jump_img
         if self.status == 2:
             # 抛物线公式
-            self.dino_rect.y -= self.v * 4 # 在空中下降,注意y轴是向下的，所以需要是-=
-            self.v -= 0.5 # 加速度为-0.5
-        if self.v < - self.ORI_V: # 恢复初始跳跃速度
+            self.dino_rect.y -= self.vy * 4 # 在空中下降,注意y轴是向下的，所以需要是-=
+            self.vy -= 0.5 # 加速度为-0.5
+        if self.vy < - self.ori_vy: # 恢复初始跳跃速度
             self.status = 1
-            self.v = self.ORI_V
+            self.vy = self.ori_vy
 
     # 定义draw函数以刷新画面
     def draw(self, SCREEN):
