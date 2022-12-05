@@ -56,12 +56,25 @@ class Bird(Barrier):
         super().__init__(image, self.type)
         self.rect.y = 250
         self.index = 0
+        self.ori_vy = 5
+        self.vy = self.ori_vy
 
     def draw(self, SCREEN):
         if self.index >= 9:
             self.index = 0
         SCREEN.blit(self.image[self.index // 5], self.rect)
         self.index += 1
+    def update(self): # 多态实现鸟的上下移动
+        self.rect.x -= self.game_speed
+        if self.rect.x < -self.rect.width or self.hp <= 0: # 还需要判断障碍物是否移出了边界，如果越界的话我们要把该障碍物释放掉
+            barriers.pop()
+        self.rect.y -= self.vy * 3
+        self.vy -= 0.5
+        if self.rect.y <= 0:
+            self.vy = self.ori_vy
+            self.vy = -self.vy
+        elif self.rect.y >= SCREEN_HEIGHT - 250:
+            self.vy = 10
 def menu(death_cnt):
     global points, max_score# 引入points, max_score全局变量
     run = True
